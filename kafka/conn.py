@@ -17,8 +17,9 @@ from kafka.future import Future
 from kafka.metrics.stats import Avg, Count, Max, Rate
 from kafka.protocol.api import RequestHeader
 from kafka.protocol.admin import SaslHandShakeRequest
-from kafka.protocol.commit import GroupCoordinatorResponse
+from kafka.protocol.commit import GroupCoordinatorResponse, OffsetFetchRequest
 from kafka.protocol.metadata import MetadataRequest
+from kafka.protocol.fetch import FetchRequest
 from kafka.protocol.types import Int32
 from kafka.version import __version__
 
@@ -877,7 +878,9 @@ class BrokerConnection(object):
         # in descending order. As soon as we find one that works, return it
         test_cases = [
             # format (<broker verion>, <needed struct>)
-            ((0, 10, 1), MetadataRequest[2])
+            ((0, 10, 1), MetadataRequest[2]),
+            ((0, 10, 2), OffsetFetchRequest[2]),
+            ((0, 11, 0), FetchRequest[5]),
         ]
 
         error_type = Errors.for_code(response.error_code)
